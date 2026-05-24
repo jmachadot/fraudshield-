@@ -34,8 +34,6 @@ modelo de aprendizaje automático escalable.
 - [Instalación](#instalación)
 - [Ejecución del pipeline](#ejecución-del-pipeline)
 - [Consultas analíticas](#consultas-analíticas)
-- [Resultados](#resultados)
-- [Capturas de resultados](#capturas-de-resultados)
 - [Solución de problemas](#solución-de-problemas)
 - [Notas y limitaciones](#notas-y-limitaciones)
 
@@ -68,12 +66,12 @@ histórico. El sistema cubre el recorrido completo del dato:
    FUENTES            INGESTA            PROCESAMIENTO         ALMACENAMIENTO         SERVICIO
  ┌──────────┐     ┌─────────────┐     ┌─────────────────┐    ┌────────────────┐    ┌────────────┐
  │ POS      │     │             │     │ Spark Structured│    │  Delta Lake    │    │ Decisión   │
- │ E-commerce├────►│ Apache Kafka├────►│ Streaming       ├───►│  Bronze        ├───►│ Alertas    │
+ │ E-commerce├───►│ Apache Kafka├────►│ Streaming       ├───►│  Bronze        ├───►│ Alertas    │
  │ App móvil│     │ (topic +    │     │ (ventanas +     │    │  Silver        │    │ Tablero    │
  │ Pasarela │     │  Schema Reg)│     │  estado)        │    │  Gold          │    │ Reentren.  │
  └──────────┘     └─────────────┘     └────────┬────────┘    └────────────────┘    └────────────┘
                                                │                                         ▲
-                                               └────────► Modelo de detección (MLlib) ────┘
+                                               └────────► Modelo de detección (MLlib) ───┘
 ```
 
 La plataforma adopta el patrón **Kappa**: un único recorrido de procesamiento de
@@ -85,20 +83,20 @@ medallón** en tres capas de refinamiento creciente:
 |--------|------------------------------------------------------------------|
 | Bronze | Eventos crudos, sin transformación. Fuente única de verdad.      |
 | Silver | Datos depurados, validados y sin duplicados.                     |
-| Gold   | Tablas de características e indicadores listas para el consumo.   |
+| Gold   | Tablas de características e indicadores listas para el consumo.  |
 
 ---
 
 ## Stack tecnológico
 
-| Componente            | Tecnología                     | Función                                              |
-|-----------------------|--------------------------------|------------------------------------------------------|
-| Ingesta               | Apache Kafka + Schema Registry | Registro de eventos distribuido y duradero.          |
-| Procesamiento         | Apache Spark Structured Streaming | Cálculo de características en ventana, con estado.|
-| Almacenamiento        | Delta Lake (Lakehouse)         | Lago de datos transaccional con garantías ACID.      |
-| Modelo de detección   | Apache Spark MLlib             | Entrenamiento y puntuación (Gradient Boosted Trees). |
-| Serialización         | Apache Avro                    | Contrato de datos y evolución del esquema.           |
-| Infraestructura       | Docker / Terraform             | Entorno local / aprovisionamiento en la nube.        |
+| Componente            | Tecnología                        | Función                                              |
+|-----------------------|-----------------------------------|------------------------------------------------------|
+| Ingesta               | Apache Kafka + Schema Registry    | Registro de eventos distribuido y duradero.          |
+| Procesamiento         | Apache Spark Structured Streaming | Cálculo de características en ventana, con estado.   |
+| Almacenamiento        | Delta Lake (Lakehouse)            | Lago de datos transaccional con garantías ACID.      |
+| Modelo de detección   | Apache Spark MLlib                | Entrenamiento y puntuación (Gradient Boosted Trees). |
+| Serialización         | Apache Avro                       | Contrato de datos y evolución del esquema.           |
+| Infraestructura       | Docker / Terraform                | Entorno local / aprovisionamiento en la nube.        |
 
 ---
 
@@ -147,12 +145,12 @@ fraudshield/
 
 ## Requisitos previos
 
-| Herramienta     | Versión       | Notas                                              |
-|-----------------|---------------|----------------------------------------------------|
-| Docker Desktop  | Reciente      | Incluye `docker compose`. Asignar al menos 4 GB RAM.|
-| Python          | **3.11**      | No usar 3.12 (PySpark 3.5 no lo soporta de forma fiable). |
-| JDK             | **17**        | Requerido por PySpark. Configurar `JAVA_HOME`.     |
-| Git             | Reciente      | Para clonar el repositorio.                        |
+| Herramienta     | Versión       | Notas                                                    |
+|-----------------|---------------|----------------------------------------------------------|
+| Docker Desktop  | Reciente      | Incluye `docker compose`. Asignar al menos 4 GB RAM.     |
+| Python          | **3.11**      | No usar 3.12 (PySpark 3.5 no lo soporta de forma fiable).|
+| JDK             | **17**        | Requerido por PySpark. Configurar `JAVA_HOME`.           |
+| Git             | Reciente      | Para clonar el repositorio.                              |
 
 Verificación rápida:
 
@@ -219,14 +217,14 @@ python -m pip install -r requirements.txt
 Con el entorno virtual activo y la infraestructura levantada, ejecutar los
 scripts **en este orden** desde la raíz del proyecto:
 
-| Paso | Comando                          | Descripción                                        |
-|------|----------------------------------|----------------------------------------------------|
-| 1    | `python data/generator.py`       | Genera el conjunto de transacciones sintéticas.    |
-| 2    | `python ingestion/producer.py`   | Publica los eventos en Kafka.                      |
-| 3    | `python streaming/app.py`        | Procesa el flujo y materializa la capa Bronze.     |
+| Paso | Comando                          | Descripción                                              |
+|------|----------------------------------|----------------------------------------------------------|
+| 1    | `python data/generator.py`       | Genera el conjunto de transacciones sintéticas.          |
+| 2    | `python ingestion/producer.py`   | Publica los eventos en Kafka.                            |
+| 3    | `python streaming/app.py`        | Procesa el flujo y materializa la capa Bronze.           |
 | 4    | `python ml/train.py`             | Entrena el modelo de detección (Gradient Boosted Trees). |
-| 5    | `python generate_gold.py`        | Genera las tablas Gold de ejemplo.                 |
-| 6    | `python queries/run_analytics.py`| Ejecuta la batería de consultas analíticas.        |
+| 5    | `python generate_gold.py`        | Genera las tablas Gold de ejemplo.                       |
+| 6    | `python queries/run_analytics.py`| Ejecuta la batería de consultas analíticas.              |
 
 > **Nota sobre el paso 3:** `app.py` es un proceso de *streaming* continuo. Cuando
 > deje de mostrar lotes con datos nuevos (un `Batch` vacío), detenerlo con
@@ -242,14 +240,14 @@ scripts **en este orden** desde la raíz del proyecto:
 
 El proyecto incluye seis consultas analíticas en `queries/`:
 
-| Consulta                        | Pregunta de negocio                                       |
-|---------------------------------|-----------------------------------------------------------|
-| `01_tasa_fraude_categoria.sql`  | Tasa de fraude por categoría de comercio.                 |
-| `02_comercios_mayor_fraude.sql` | Comercios con mayor monto de fraude.                      |
-| `03_distribucion_horaria.sql`   | Distribución horaria de transacciones legítimas y fraudulentas. |
-| `04_clientes_alertas.sql`       | Clientes con mayor número de alertas.                     |
-| `05_evolucion_diaria.sql`       | Evolución diaria de la detección (recall y precisión).    |
-| `06_viaje_imposible.sql`        | Detección del patrón de "viaje imposible" (clonación de tarjeta). |
+| Consulta                        | Pregunta de negocio                                              |
+|---------------------------------|------------------------------------------------------------------|
+| `01_tasa_fraude_categoria.sql`  | Tasa de fraude por categoría de comercio.                        |
+| `02_comercios_mayor_fraude.sql` | Comercios con mayor monto de fraude.                             |
+| `03_distribucion_horaria.sql`   | Distribución horaria de transacciones legítimas y fraudulentas.  |
+| `04_clientes_alertas.sql`       | Clientes con mayor número de alertas.                            |
+| `05_evolucion_diaria.sql`       | Evolución diaria de la detección (recall y precisión).           |
+| `06_viaje_imposible.sql`        | Detección del patrón de "viaje imposible" (clonación de tarjeta).|
 
 ---
 

@@ -20,7 +20,7 @@ proyecto adopta un paradigma *streaming-first* (arquitectura Kappa) e integra
 ingesta de eventos, procesamiento de flujos, un data lake transaccional y un
 modelo de aprendizaje automático escalable.
 
-> Trabajo de investigación — Maestría en Inteligencia Artificial · Curso de Big Data · Sección A
+> Trabajo de investigación — Maestría en Inteligencia Artificial · Curso de Big Data · Sección A · Grupo 7
 
 Integrantes:
 - Machado Torres, Julio.

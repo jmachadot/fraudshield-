@@ -17,7 +17,7 @@
 Arquitectura de Big Data que evalúa transacciones de comercio minorista en tiempo
 casi real y estima la probabilidad de que cada operación sea fraudulenta. El
 proyecto adopta un paradigma *streaming-first* (arquitectura Kappa) e integra
-ingesta de eventos, procesamiento de flujos, un lago de datos transaccional y un
+ingesta de eventos, procesamiento de flujos, un data lake transaccional y un
 modelo de aprendizaje automático escalable.
 
 > Trabajo de investigación — Maestría en Inteligencia Artificial · Curso de Big Data · Sección A
@@ -61,7 +61,7 @@ histórico. El sistema cubre el recorrido completo del dato:
 
 1. **Ingesta** de los eventos transaccionales de todos los canales de venta.
 2. **Procesamiento en flujo** con cálculo de características sobre ventanas de tiempo.
-3. **Almacenamiento** en un lago de datos transaccional organizado por capas.
+3. **Almacenamiento** en un data lake transaccional organizado por capas.
 4. **Detección** del fraude mediante un modelo de clasificación supervisado.
 5. **Explotación analítica** del histórico mediante consultas SQL.
 
@@ -83,7 +83,7 @@ histórico. El sistema cubre el recorrido completo del dato:
 
 La plataforma adopta el patrón **Kappa**: un único recorrido de procesamiento de
 flujos atiende tanto la puntuación en tiempo real como la construcción del
-histórico analítico. El lago de datos se organiza según la **arquitectura
+histórico analítico. El data lake se organiza según la **arquitectura
 medallón** en tres capas de refinamiento creciente:
 
 | Capa   | Contenido                                                        |
@@ -100,7 +100,7 @@ medallón** en tres capas de refinamiento creciente:
 |-----------------------|-----------------------------------|------------------------------------------------------|
 | Ingesta               | Apache Kafka + Schema Registry    | Registro de eventos distribuido y duradero.          |
 | Procesamiento         | Apache Spark Structured Streaming | Cálculo de características en ventana, con estado.   |
-| Almacenamiento        | Delta Lake (Lakehouse)            | Lago de datos transaccional con garantías ACID.      |
+| Almacenamiento        | Delta Lake (Lakehouse)            | Data lake transaccional con garantías ACID.          |
 | Modelo de detección   | Apache Spark MLlib                | Entrenamiento y puntuación (Gradient Boosted Trees). |
 | Serialización         | Apache Avro                       | Contrato de datos y evolución del esquema.           |
 | Infraestructura       | Docker / Terraform                | Entorno local / aprovisionamiento en la nube.        |

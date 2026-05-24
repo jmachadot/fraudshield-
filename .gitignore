@@ -1,0 +1,25 @@
+# Entorno virtual de Python
+venv/
+.venv/
+
+# Datos generados y artefactos del pipeline
+data/transacciones_sinteticas.json
+lakehouse/bronze/
+lakehouse/silver/
+lakehouse/gold/
+lakehouse/modelos/
+lakehouse/_checkpoints/
+
+# Spark / Python temporales
+__pycache__/
+*.pyc
+spark-warehouse/
+metastore_db/
+derby.log
+
+# VS Code
+.vscode/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db

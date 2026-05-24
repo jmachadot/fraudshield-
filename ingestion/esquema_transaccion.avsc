@@ -1,0 +1,24 @@
+{
+  "type": "record",
+  "name": "EventoTransaccion",
+  "namespace": "com.fraudshield.eventos",
+  "fields": [
+    { "name": "id_transaccion",   "type": "string" },
+    { "name": "timestamp_evento", "type": { "type": "long", "logicalType": "timestamp-millis" } },
+    { "name": "id_cliente",       "type": "string" },
+    { "name": "id_comercio",      "type": "string" },
+    { "name": "id_terminal",      "type": ["null", "string"], "default": null },
+    { "name": "canal",            "type": { "type": "enum", "name": "Canal", "symbols": ["POS", "ECOMMERCE", "APP_MOVIL"] } },
+    { "name": "hash_tarjeta",     "type": "string" },
+    { "name": "monto",            "type": { "type": "bytes", "logicalType": "decimal", "precision": 12, "scale": 2 } },
+    { "name": "moneda",           "type": "string" },
+    { "name": "mcc",              "type": "int" },
+    { "name": "tarjeta_presente", "type": "boolean" },
+    { "name": "pais",             "type": "string" },
+    { "name": "latitud",          "type": ["null", "double"], "default": null },
+    { "name": "longitud",         "type": ["null", "double"], "default": null },
+    { "name": "id_dispositivo",   "type": ["null", "string"], "default": null },
+    { "name": "ip_origen",        "type": ["null", "string"], "default": null },
+    { "name": "es_fraude",        "type": "boolean", "default": false }
+  ]
+}

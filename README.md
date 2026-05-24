@@ -188,9 +188,7 @@ docker compose ps          # los servicios deben aparecer "running" / "healthy"
 Crear el topic principal de transacciones:
 
 ```bash
-docker exec fraudshield-kafka kafka-topics --create \
-  --topic transacciones.crudas --bootstrap-server kafka:29092 \
-  --partitions 6 --replication-factor 1
+docker exec fraudshield-kafka kafka-topics --create --topic transacciones.crudas --bootstrap-server kafka:29092 --partitions 6 --replication-factor 1
 ```
 
 ### 3. Crear el entorno virtual de Python
